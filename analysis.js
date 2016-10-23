@@ -33,6 +33,7 @@ function analy(userName) {
     fs.unlink('./data/' + userName + star.substr(0, 10) + '-' + end.substr(0, 10) + '.json', function() {
         console.log("remove private data");
     });
+    jsonData = {};
     return returnJson;
 }
 module.exports = analy;

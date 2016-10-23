@@ -37,26 +37,50 @@ router.get('/', async(ctx, next) => {
 router.post('/signin', async(ctx, next) => {
     var
         name = ctx.request.body.name || '',
-        password = ctx.request.body.password || '';
+        password = ctx.request.body.password || '',
+        idRegex = /\d{10}/;
     console.log(`signin with name: ${name}, password: ${password}`);
 
-    console.log('exec readRemote');
-    xcatch(name);
+    if (idRegex.test(name) === false) {
+        genHtml('fuck');
+    } else {
 
-    var rawData;
+        console.log('exec readRemote');
+        xcatch(name);
 
-    function func2() {
-        console.log('exec writeData');
-        rawData = 'data:[' + analysis(name) + ']';
+        var rawData;
+
+        function func2() {
+            console.log('exec writeData');
+            rawData = 'data:[' + analysis(name) + ']';
+        }
+
+        setTimeout(func2, 100);
+        setTimeout(genHtml, 300);
     }
 
-    setTimeout(func2, 100);
-    setTimeout(genHtml, 300);
+    function genHtml(f) {
+        if (f === 'fuck') {
+            console.log('wrong id!');
+            ctx.response.body = `
+            <!DOCTYPE html>
+            <html>
 
-    function genHtml() {
-        var data = rawData;
-        console.log('exec genHtml');
-        ctx.response.body = `
+            <head>
+                <meta charset="UTF-8">
+                <title>Title of the document</title>
+            </head>
+
+            <body>
+            <h1>${name} isn't a valid ID!</h1>
+            </body>
+
+            </html>
+            `;
+        } else {
+            var data = rawData;
+            console.log('exec genHtml');
+            ctx.response.body = `
         <!DOCTYPE html>
         <html>
 
@@ -93,6 +117,7 @@ router.post('/signin', async(ctx, next) => {
 
         </html>
         `;
+        }
     }
 });
 
