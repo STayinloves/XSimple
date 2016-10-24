@@ -26,12 +26,33 @@ router.get('/hello/:name', async(ctx, next) => {
 });
 
 router.get('/', async(ctx, next) => {
-    ctx.response.body = `<h1>Index</h1>
-        <form action="/signin" method="post">
-            <p>Name: <input name="name" value=""></p>
-            <p>Password: <input name="password" type="password"></p>
-            <p><input type="submit" value="Submit"></p>
-        </form>`;
+    ctx.response.body = `
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Title of the document</title>
+        <script src="//cdn.bootcss.com/echarts/3.2.3/echarts.common.js"></script>
+        <script src="https://cdn.staticfile.org/semantic-ui/2.2.4/semantic.js"></script>
+        <link rel="stylesheet" href="https://cdn.staticfile.org/semantic-ui/2.2.4/semantic.css">
+    </head>
+        <h1 style="padding-top: 9%;text-align: center;">XSimple Login</h1>
+        <div class="ui main container">
+        <form class="ui form two column centered grid" action="/signin" method="post" style:"padding-top: 10%;">
+          <div class="field">
+            <label>ID Number</label>
+            <input type="text" name="name" placeholder="">
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="">
+          </div>
+          <button class="ui button" type="submit">Submit</button>
+        </form>
+        <div>
+    </html>
+        `;
 });
 
 router.post('/signin', async(ctx, next) => {
@@ -55,7 +76,7 @@ router.post('/signin', async(ctx, next) => {
             rawData = 'data:[' + analysis(name) + ']';
         }
 
-        setTimeout(func2, 100);
+        setTimeout(func2, 200);
         setTimeout(genHtml, 300);
     }
 
@@ -86,11 +107,14 @@ router.post('/signin', async(ctx, next) => {
 
         <head>
             <meta charset="UTF-8">
-            <title>Title of the document</title>
+            <title>Login</title>
             <script src="//cdn.bootcss.com/echarts/3.2.3/echarts.common.js"></script>
+            <script src="https://cdn.staticfile.org/semantic-ui/2.2.4/semantic.js"></script>
+            <link rel="stylesheet" href="https://cdn.staticfile.org/semantic-ui/2.2.4/semantic.css">
         </head>
 
         <body>
+        <div class="ui main container">
         <h1>Welcome, ${name}!</h1>
         <div id="main" style="width: 600px;height:400px;float:right;"></div>
         <script type="text/javascript">
@@ -112,7 +136,7 @@ router.post('/signin', async(ctx, next) => {
                 animationDuration: 2000
             })
         </script>
-
+        </div>
         </body>
 
         </html>
