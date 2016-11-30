@@ -2,10 +2,11 @@
 var superagent = require('superagent');
 var cheerio = require('cheerio');
 var fs = require('fs');
+const events = require('events');
 
 var O = {
     data: "",
-    v: (startTime, endTime, pageSize, userName, callback) => {
+    v: (startTime, endTime, pageSize, userName, event) => {
         console.log('run' + startTime + ' ' + endTime + ' ' + pageSize);
         superagent
             .get(
@@ -17,11 +18,11 @@ var O = {
             .set('Content-Type', 'text/html')
             .end(function(err, res) {
                 if (err || !res.ok) {
-                    console.log('Oh no! error');
+                    console.log('Oh no! catch error');
                 } else {
-                    var $ = cheerio.load(res.text);
-                    var items = $("td.tab_xx");
-                    var arr = [];
+                    var $ = cheerio.load(res.text),
+                        items = $("td.tab_xx"),
+                        arr = [];
                     for (var i = 0; i < items.length; i++) {
                         if (i % 4 == 0) continue;
                         if (i % 4 == 1)
@@ -34,20 +35,19 @@ var O = {
                     var arrStr = arr.join('');
                     O.data = "{\"item\":[" + arrStr.substr(0, arrStr.length - 1) + "]}";
                     console.log('got remote data complete');
-                    callback();
+
+                    fs.writeFile('./data/' + userName + startTime + '-' + endTime + '.json', O.data, function(err) {
+                        if (err) console.log(err);
+                        else {
+                            console.log('write file success');
+                            event.emit('catchDone');
+                        }
+                    });
                 }
             });
     }
 }
-var start = (startTime, endTime, pageSize, userName) => {
-    var writeData = () => {
-        try {
-            fs.writeFileSync('./data/' + userName + startTime + '-' + endTime + '.json', O.data);
-            console.log('write data complete');
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    O.v(startTime, endTime, pageSize, userName, writeData);
+var start = (startTime, endTime, pageSize, userName, event) => {
+    O.v(startTime, endTime, pageSize, userName, event);
 }
 module.exports = start;
